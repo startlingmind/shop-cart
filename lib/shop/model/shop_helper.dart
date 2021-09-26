@@ -1,3 +1,3 @@
 class ShopHelper {
-  static const GRID_COLUMN_VALUE = 4;
+  static const GRID_COLUMN_VALUE = 2;
 }

@@ -57,7 +57,7 @@ class ShopView extends ShopViewModel {
 
   int get shopListLastIndex => shopList.length;
 
-  Container get emptyWidget => Container(height: oneItemHeight * 2);
+  Container get emptyWidget => Container(height: oneItemHeight * 0.5);
 
   Widget get buildListViewHeader {
     return Consumer<TabBarChange>(
