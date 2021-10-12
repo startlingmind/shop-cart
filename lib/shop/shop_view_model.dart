@@ -16,11 +16,11 @@ abstract class ShopViewModel extends State<Shop> {
   void initState() {
     super.initState();
     shopList = List.generate(
-      5,
+      6,
       (index) => ShopModel(
         categoryName: "Category",
         products: List.generate(
-          5,
+          10,
           (index) => Product("Product $index", index * 100),
         ),
       ),
