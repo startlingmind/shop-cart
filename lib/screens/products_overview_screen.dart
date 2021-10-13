@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import '../category/accessories.dart';
-import '../category/shoes.dart';
-import '../category/kids.dart';
-import '../category/men.dart';
-import '../category/women.dart';
-import '../category/grooming.dart';
+import 'package:shop_app/category/category_page.dart';
 
 class ProductsOverviewScreen extends StatefulWidget {
   const ProductsOverviewScreen({Key? key}) : super(key: key);
@@ -22,7 +17,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           appBar: AppBar(
               elevation: 0,
               backgroundColor: Colors.white,
-              //title: Center(child: Text('MyShop')),
+              title: Center(
+                  child: Text('Welcome !',
+                      style: TextStyle(
+                          color: Colors.black87, fontWeight: FontWeight.bold))),
               bottom: TabBar(
                   unselectedLabelColor: Colors.black,
                   indicatorSize: TabBarIndicatorSize.label,
@@ -36,6 +34,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                     borderRadius: BorderRadius.circular(5),
                     // color: Colors.red,
                   ),
+                  // array of categories - dynamic
                   tabs: [
                     TabBarBox('Men'),
                     TabBarBox('Women'),
@@ -46,12 +45,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                   ])),
           body: const TabBarView(
             children: [
-              Men(),
-              Women(),
-              Kids(),
-              Shoes(),
-              Accessory(),
-              Grooming(),
+              CategoryPage('Men'),
+              CategoryPage('Women'),
+              CategoryPage('Kids'),
+              CategoryPage('Shoes'),
+              CategoryPage('Accessories'),
+              CategoryPage('Grooming'),
             ],
           )),
     );
