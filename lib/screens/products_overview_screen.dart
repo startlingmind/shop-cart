@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shop_app/category/category_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:convert/convert.dart';
 
 class ProductsOverviewScreen extends StatefulWidget {
   const ProductsOverviewScreen({Key? key}) : super(key: key);
@@ -9,6 +13,31 @@ class ProductsOverviewScreen extends StatefulWidget {
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  late List items = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchData();
+    super.initState();
+  }
+
+  void fetchData() async {
+    try {
+      var response = await http.get(Uri.parse(
+          'https://startupify-sample-apis.herokuapp.com/products?start=0&rows=100&category=kids'));
+      // print(response);
+      //print(data);
+
+      items = jsonDecode(response.body)['results'];
+
+      // print(count);
+      // return data;
+    } catch (e) {
+      print(e);
+      // return "";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -43,7 +72,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                     TabBarBox('Accessories'),
                     TabBarBox('Grooming'),
                   ])),
-          body: const TabBarView(
+          body: TabBarView(
             children: [
               CategoryPage('Men'),
               CategoryPage('Women'),
@@ -83,3 +112,4 @@ class TabBarBox extends StatelessWidget {
 //     child: CircularProgressIndicator(),
 //   );
 // }
+

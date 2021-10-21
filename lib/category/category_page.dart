@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/screens/product_detail_screen.dart';
+import 'package:shop_app/models/product.dart';
+import 'package:provider/provider.dart';
+import '../providers/products_provider.dart';
+import '../widgets/product_item.dart';
+import 'package:http/http.dart' as http;
+import '../models/product.dart';
 
 class CategoryPage extends StatefulWidget {
   final String category;
-  const CategoryPage(this.category, {Key? key}) : super(key: key);
+  // final List items;
+  CategoryPage(this.category, {Key? key}) : super(key: key);
 
   @override
   _CategoryPageState createState() => _CategoryPageState();
@@ -11,24 +17,41 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   final ScrollController _scrollController = ScrollController();
-  List<String> items = [];
+  // List<String> items = [];
   bool loading = false, allLoaded = false;
 
   // add the api call here
 
-  void fetchData() async {
+  Future<List<Result>> fetchData() async {
     if (allLoaded) {
-      return;
+      return [];
     }
     setState(() {
       loading = true;
     });
-    await Future.delayed(Duration(milliseconds: 500));
-    List<String> newData = items.length >= 100
+    //await Future.delayed(Duration(milliseconds: 500));
+    var url =
+        'https://startupify-sample-apis.herokuapp.com/products?start=0&rows=100&category=' +
+            widget.category;
+    var response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('Data Found');
+      Product items = productFromJson(response.body);
+      List<Result> arrData = items.results;
+      // print(arrData.length);
+      return arrData;
+    } else {
+      print('Error');
+      throw Exception('Failed to Fetch Data');
+    }
+
+    List<Result> newData = arrData.results.length >= 100
         ? []
-        : List.generate(10, (index) => "List Item ${index + items.length}");
+        : List.generate(
+            10, (index) => "List Item ${index + widget.items.length}");
     if (newData.isNotEmpty) {
-      items.addAll(newData);
+      widget.items.addAll(newData);
     }
 
     setState(() {
@@ -59,8 +82,10 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final productData = Provider.of<Product>(context);
+    final products = productData.items;
     return LayoutBuilder(builder: (context, constraints) {
-      if (items.isNotEmpty) {
+      if (widget.items.isNotEmpty) {
         return Container(
           height: 800,
           child: Stack(children: [
@@ -71,21 +96,11 @@ class _CategoryPageState extends State<CategoryPage> {
                     mainAxisSpacing: 20),
                 controller: _scrollController,
                 itemBuilder: (context, index) {
-                  if (index < items.length) {
+                  if (index < products.length) {
                     return GestureDetector(
-                      onTap: null,
-                      child: GridTile(
-                        child: Icon(Icons.production_quantity_limits_rounded),
-                        footer: GridTileBar(
-                          title: Text("${widget.category} Product #$index"),
-                          trailing: IconButton(
-                            icon: Icon(Icons.shopping_cart),
-                            onPressed: null,
-                          ),
-                          backgroundColor: Colors.black54,
-                        ),
-                      ),
-                    );
+                        onTap: null,
+                        child: ProductItem('1', 'Hello',
+                            'https://placeimg.com/640/480/fashion'));
                   } else {
                     return Container(
                         width: constraints.maxWidth,
@@ -95,7 +110,7 @@ class _CategoryPageState extends State<CategoryPage> {
                         ));
                   }
                 },
-                itemCount: items.length + (allLoaded ? 1 : 0)),
+                itemCount: products.length + (allLoaded ? 1 : 0)),
             if (loading) ...[
               Positioned(
                   width: constraints.maxWidth,

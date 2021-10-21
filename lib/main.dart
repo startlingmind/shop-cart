@@ -3,6 +3,9 @@
 // import 'package:http/http.dart' as http;
 import './screens/products_overview_screen.dart';
 import 'package:flutter/material.dart';
+import './screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
+import './providers/products_provider.dart';
 
 void main() => runApp(const MyApp());
 
@@ -16,13 +19,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ShopApp',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (ctx) => Products(),
+      child: MaterialApp(
+        title: 'ShopApp',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: ProductsOverviewScreen(),
+        routes: {
+          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+        },
+        debugShowCheckedModeBanner: false,
       ),
-      home: ProductsOverviewScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
